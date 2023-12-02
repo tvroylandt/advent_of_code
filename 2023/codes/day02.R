@@ -41,3 +41,13 @@ sum(df_bag_id$id)
 # 2377
 
 # Part two ----------------------------------------------------------------
+df_bag_power <- df_bag |> 
+  group_by(id) |> 
+  summarise(across(c(green, red, blue), max))|> 
+  mutate(power = green * red * blue)
+
+# answer
+sum(df_bag_power$power)
+
+# 71220
+
