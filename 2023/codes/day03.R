@@ -72,17 +72,34 @@ df_all <- df_engine_pos_numbers |>
     by = c("dummy"),
     relationship =
       "many-to-many"
-  ) |>
+  )
+
+df_all_part_one <- df_all |>
   filter((abs(row_nb - row_sym)) <= 1 &
            abs(col_nb - col_sym) <= 1) |>
   distinct(col_nb, start, numbers) |>
   arrange(col_nb, start)
 
 # answer
-sum(df_all$numbers)
+sum(df_all_part_one$numbers)
 
 # 530849
 
 # Part two ----------------------------------------------------------------
+df_all_part_two <- df_all |> 
+  filter(symbols == "*") |> 
+  filter((abs(row_nb - row_sym)) <= 1 &
+           abs(col_nb - col_sym) <= 1) |> 
+  distinct(col_nb, start, numbers, col_sym, row_sym) |> 
+  group_by(col_sym, row_sym) |> 
+  add_count() |> 
+  mutate(id = row_number()) |> 
+  filter(n == 2) |> 
+  select(col_sym, row_sym, id, numbers) |> 
+  pivot_wider(names_from =  id, names_prefix = "nb_", values_from = numbers) |> 
+  mutate(product = nb_1 * nb_2)
 
 # answer
+sum(df_all_part_two$product)
+
+# 84900879
